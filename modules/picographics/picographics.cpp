@@ -953,7 +953,17 @@ mp_obj_t ModPicoGraphics_clear(mp_obj_t self_in) {
     return mp_const_none;
 }
 
-mp_obj_t ModPicoGraphics_pixel_bulk(mp_obj_t self_in, mp_obj_t data, mp_obj_t x, mp_obj_t y, mp_obj_t width, mp_obj_t height) {
+// mp_obj_t ModPicoGraphics_pixel_bulk(mp_obj_t self_in, mp_obj_t data, mp_obj_t x, mp_obj_t y, mp_obj_t width, mp_obj_t height) {
+mp_obj_t ModPicoGraphics_pixel_bulk(size_t n_args, const mp_obj_t *args) {
+    enum { ARG_self, ARG_data, ARG_x, ARG_y, ARG_width, ARG_height };
+
+    mp_obj_t self_in = args[ARG_self];
+    mp_obj_t data = args[ARG_data];
+    mp_obj_t x = args[ARG_x];
+    mp_obj_t y = args[ARG_y];
+    mp_obj_t width = args[ARG_width];
+    mp_obj_t height = args[ARG_height];
+
     ModPicoGraphics_obj_t *self = MP_OBJ_TO_PTR2(self_in, ModPicoGraphics_obj_t);
 
     mp_obj_t *items;

@@ -953,8 +953,30 @@ mp_obj_t ModPicoGraphics_clear(mp_obj_t self_in) {
     return mp_const_none;
 }
 
-mp_obj_t ModPicoGraphics_pixel_bulk(mp_obj_t self_in, mp_obj_t x, mp_obj_t y) {
+mp_obj_t ModPicoGraphics_pixel_bulk(mp_obj_t self_in, mp_obj_t data, mp_obj_t x, mp_obj_t y, mp_obj_t width, mp_obj_t height) {
     ModPicoGraphics_obj_t *self = MP_OBJ_TO_PTR2(self_in, ModPicoGraphics_obj_t);
+
+    mp_obj_t *items;
+    size_t length;
+    mp_obj_get_array(data, &length, &items);
+
+    int width_val = mp_obj_get_int(width);
+    int height_val = mp_obj_get_int(height);
+    
+    int originX = mp_obj_get_int(x);
+    int originY = mp_obj_get_int(y);
+
+    int index = 0;
+    for (int y = 0; y < height_val; y++) {
+        for (int x = 0; x < width_val; x++) {
+            self->graphics->set_pen(RGB(mp_obj_get_int(items[index]), mp_obj_get_int(items[index + 1]), mp_obj_get_int(items[index + 2])).to_rgb555());
+            index += 3;
+            self->graphics->pixel({
+                originX + x,
+                originY + y
+            });
+        }
+    }
 
     self->graphics->pixel({
         mp_obj_get_int(x),

@@ -966,9 +966,12 @@ mp_obj_t ModPicoGraphics_pixel_bulk(size_t n_args, const mp_obj_t *args) {
 
     ModPicoGraphics_obj_t *self = MP_OBJ_TO_PTR2(self_in, ModPicoGraphics_obj_t);
 
-    mp_obj_t *items;
-    size_t length;
-    mp_obj_get_array(data, &length, &items);
+    // mp_obj_t *items;
+    // size_t length;
+    // mp_obj_get_array(data, &length, &items);
+
+    mp_buffer_info_t bufinfo;
+    mp_get_buffer_raise(data, &bufinfo, MP_BUFFER_READ);
 
     int width_val = mp_obj_get_int(width);
     int height_val = mp_obj_get_int(height);
@@ -979,12 +982,20 @@ mp_obj_t ModPicoGraphics_pixel_bulk(size_t n_args, const mp_obj_t *args) {
     int index = 0;
     for (int y = 0; y < height_val; y++) {
         for (int x = 0; x < width_val; x++) {
-            self->graphics->set_pen(RGB(mp_obj_get_int(items[index]), mp_obj_get_int(items[index + 1]), mp_obj_get_int(items[index + 2])).to_rgb555());
+            self->graphics->set_pen(((uint8_t *)bufinfo.buf)[index], ((uint8_t *)bufinfo.buf)[index + 1], ((uint8_t *)bufinfo.buf)[index + 2]);
             index += 3;
             self->graphics->pixel({
                 originX + x,
                 originY + y
             });
+            
+
+            // self->graphics->set_pen(RGB(mp_obj_get_int(items[index]), mp_obj_get_int(items[index + 1]), mp_obj_get_int(items[index + 2])).to_rgb555());
+            // index += 3;
+            // self->graphics->pixel({
+            //     originX + x,
+            //     originY + y
+            // });
         }
     }
 
